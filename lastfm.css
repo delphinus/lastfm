@@ -28,6 +28,7 @@ dd
 .lastfm
 {
     list-style-type: none;
+    margin: 0;
     padding: 3px 0;
     height: 433px;
 }
