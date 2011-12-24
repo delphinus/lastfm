@@ -2,6 +2,29 @@ body
 {
     margin: 1em;
 }
+
+h1
+{
+    text-shadow: 1px 1px 3px #aaa;
+    box-shadow: 1px 1px 3px #000;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    padding: 0.2em 1em;
+    background-color: seashell;
+}
+
+h2
+{
+    text-shadow: 1px 1px 3px #aaa;
+    box-shadow: 2px 2px 2px #000;
+    -moz-box-shadow: 2px 2px 2px #000;
+    -webkit-box-shadow: 2px 2px 2px #000;
+    border-left: 20px solid navy;
+    border-bottom: 2px double navy;
+    padding: 0.2em 1em;
+}
+
+/* サイドバーに置くタイプ {{{ */
 #sidebar
 {
     margin: 1em 2em;
@@ -107,3 +130,114 @@ body
     text-align: center;
     margin: 0;
 }
+/* }}} */
+
+/* 横に広いタイプ {{{ */
+#wide
+{
+    margin: 1em 2em;
+}
+#wide dt
+{
+    text-transform: uppercase;
+    font-weight: bold;
+}
+#wide dt:before
+{
+    content: "» ";
+}
+#wide dd
+{
+    width: 1024px;
+    margin: 0;
+    padding: 3px;
+    background-color: whitesmoke;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+#wide .lastfm
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 3px 0;
+    height: 180px;
+}
+#wide .lastfm li
+{
+    float: left;
+    height: 68px;
+    margin: 3px 5px;
+    padding: 7px 12px;
+    position: relative;
+    background-color: #e8d3c7;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+#wide .lfm_art
+,#wide .lfm_art a
+{
+    position: absolute;
+}
+#wide .lfm_art a
+{
+    background: none;
+    padding-left: 0;
+}
+#wide .lfm_overlay
+,#wide a
+{
+    top: 0;
+    left: 0;
+}
+#wide .lfm_art
+{
+    _left: 5px;
+}
+#wide .lfm_overlay
+{
+    _display: none;
+}
+#wide .lfm_art
+,#wide .lfm_art a
+,#wide .lfm_art img
+{
+    width: 64px;
+    height: 64px;
+}
+#wide .lfm_art img
+{
+    margin-top: 2px;
+    border-width: 0;
+}
+#wide .lfm_song
+{
+    font-weight: bold;
+}
+#wide .lfm_song
+,#wide .lfm_artist
+,#wide .lfm_datetime
+{
+    margin-left: 72px;
+    font-size: 14px%;
+    white-space: nowrap;
+    overflow:hidden;
+    height: 16px;
+    width: 148px;
+}
+#wide .lfm_datetime
+{
+    color: maroon;
+    text-align: right;
+}
+#wide .lfm_update
+{
+    font-size: 100%;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 2em;
+}
+/* }}} */
+
+/* vim:se fdm=marker: */
