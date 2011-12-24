@@ -1,14 +1,37 @@
+dl
+{
+    margin: 1em 2em;
+}
+dt
+{
+    text-transform: uppercase;
+    font-weight: bold;
+}
+dt:before
+{
+    content: "» ";
+}
+dd
+{
+    width: 208px;
+    margin: 0;
+    padding: 3px;
+    background-color: whitesmoke;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
 .lastfm
 {
     list-style-type: none;
-    padding: 3px 0 !important;
+    padding: 3px 0;
     height: 433px;
 }
 .lastfm li
 {
     clear: both;
     height: 36px;
-    margin: 3px 5px !important;
+    margin: 3px 5px;
     padding: 2px 5px;
     position: relative;
     background-color: #e8d3c7;
@@ -30,9 +53,9 @@
 .lastfm .lfm_art a
 {
     position: absolute;
-    background: none !important;
-    padding-left: 0 !important;
-	z-index: 10000;
+    background: none;
+    padding-left: 0;
+    z-index: 10000;
 }
 .lastfm .lfm_overlay
 ,.lastfm a
@@ -44,8 +67,8 @@
 ,.lastfm .lfm_art a
 ,.lastfm .lfm_art img
 {
-	width: 32px;
-	height: 32px;
+    width: 32px;
+    height: 32px;
     float: left;
 }
 .lastfm .lfm_art img
@@ -55,16 +78,16 @@
 }
 .lastfm .lfm_song
 {
-	font-weight: bold;
+    font-weight: bold;
 }
 .lastfm .lfm_song
 ,.lastfm .lfm_artist
 ,.lastfm .lfm_datetime
 {
     margin-left: 40px;
-	font-size: 10px;
-	white-space: nowrap;
-	overflow:hidden;
+    font-size: 10px;
+    white-space: nowrap;
+    overflow:hidden;
     height: 12px;
     width: 148px;
     float: left;
@@ -79,5 +102,5 @@
     width: 208px;
     font-size: 85%;
     text-align: center;
-    margin: 0 5px 0 15px;
+    margin: 0;
 }
