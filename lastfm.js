@@ -351,7 +351,7 @@ function parseNum(i, def) {
 // 様々な時刻を返す
 function setEpoch(num) {
     var now = new Date()
-        t = {
+        ,t = {
             now       : now
             ,today    : new Date(now.getTime())
             ,yesterday: new Date(now.getTime() - 86400 * 1000)
