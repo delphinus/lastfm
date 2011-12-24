@@ -64,6 +64,10 @@ dd
 {
     _left: 5px;
 }
+.lastfm .lfm_overlay
+{
+    _display: none;
+}
 .lastfm .lfm_art
 ,.lastfm .lfm_art a
 ,.lastfm .lfm_art img
