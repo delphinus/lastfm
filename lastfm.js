@@ -56,7 +56,7 @@ LFM.prototype = {
         // 表示を遅らせる
         ,drawDelay: true
         // 遅らせる間隔（単位：ミリセカンド）
-        ,drawInterval: 500
+        ,fadeDuration: 500
         // 完了したときに実行する関数
         ,onComplete: function(){}
     }
@@ -219,7 +219,7 @@ LFM.prototype = {
     ,displaytrack: function(i, info) {
         var then, seconds, minutes, $art, lastTrack
             ,interval = this.options.drawDelay
-                ? this.options.drawInterval * i : 0
+                ? this.options.fadeDuration * i : 0
             ,showArtistImage = false
             ,track = {
                 url: stripslashes(info.url)

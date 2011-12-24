@@ -41,8 +41,12 @@ $('#lastfm').lastFM({
     ,updateInterval: '10m'
         // if autoUpdate is true, this interval is used.
         // you can use prefix: h => hours, m => minutes, s => seconds
+    ,drawDelay: true
+        // if true, tracks will appear with fade-in effect.
+    ,fadeDuration: 500
+        // duration for fade-in. this must be specified in milliseconds.
     ,onComplete: function(){}
-        // callback to be called when query will finish.
+        // callback to be called when query has finished.
 });
 ```
 
