@@ -1,25 +1,28 @@
 'use strict';
 
-// strftime.js が読み込まれてないときの対処
+// you need strftime.js to display time neatly
 if (!Date.prototype.strftime) {
     Date.prototype.strftime = function(){
         return this.toString();
     };
 }
 
-// デバッグコンソール
+// for debug
 if (!window.console) {
     window.console = {
         log: function(){}
     };
 }
 
-// Last.FM オブジェクトを納める配列
+// array for instances
 window.lfmObjs = [];
 
+
+// start definition
 (function($){
 
-    // デバッグ用関数
+
+    // for debug
 var _log = function(msg) {
         if (!window.TEST_MODE || !window.console) {
             return false;
@@ -27,7 +30,7 @@ var _log = function(msg) {
         console.log(msg);
     }
 
-    // コンストラクタ
+    // constructor
     ,LFM = function(options, container) {
         this.init(options, $(container));
         this.updatetracks();
@@ -35,33 +38,35 @@ var _log = function(msg) {
 ;
 
 LFM.prototype = {
-    // オプションの初期値
+    // default option values
     defaults: {
-        // アカウント名
+        // account name to display
         username: 'delphinus_iddqd'
         // Last.FM API Key
         ,apikey: 'fca0142adfe95a7fb622a63d28b7d1a5'
-        // 表示するトラック数
+        // number of tracks to display
         ,number: 10
-        // 表示する画像の大きさ
+        // size of pictures
         ,artSize: 'medium'
-        // 画像が見つからないときの代替画像
+        // for tracks that have no pictures
         ,noart: '/images/noartwork.gif'
-        // アルバムアートが見つからないときはアーティストの画像を表示する
+        // if true, artist arts are displayed instead of album arts
+        // when tracks have no album arts.
         ,showArtistArt: true
-        // 自動更新する
+        // if true, list is being updated in some interval.
         ,autoUpdate: true
-        // 更新間隔
+        // if autoUpdate is true, this interval is used.
+        // you can use prefix: h => hours, m => minutes, s => seconds
         ,updateInterval: '1m'
-        // 表示を遅らせる
+        // if true, tracks will appear with fade-in effect.
         ,drawDelay: true
-        // 遅らせる間隔（単位：ミリセカンド）
+        // duration for fade-in. this must be specified in milliseconds.
         ,fadeDuration: 500
-        // 完了したときに実行する関数
+        // callback to be called when query has finished.
         ,onComplete: function(){}
     }
 
-    // 初期設定
+    // initialization
     ,init: function(options, $container) {
         var lfm, name, item, found
             ,i = 0
@@ -69,10 +74,11 @@ LFM.prototype = {
             ,options = $.extend({}, defaults, options)
         ;
 
+        // translate updateInterval to integer
         options.updateInterval = parseNum(options.updateInterval);
 
-        // 今までに作成した LFM オブジェクトの一覧を走査して
-        // 対象の要素に対応する LFM オブジェクトがすでに存在するならばそれを使う
+        // scan LFM instances.
+        // if you discover object for target DOM, it will be used.
         while (lfm = lfmObjs[i]) {
             if ($container.hasClass(lfm.name)) {
                 found = true;
@@ -83,12 +89,12 @@ LFM.prototype = {
         }
 
         if (found) {
-            // タイマーが稼働しているなら止める
+            // stop timers
             for (i in lfm.timer) {
                 clearInterval(lfm.timer[i]);
             }
 
-            // 更新時刻表示ラベルがあれば消しておく
+            // remove label for next update
             if (lfm.$timerLabel) {
                 lfm.$timerLabel.remove();
             }
@@ -96,23 +102,23 @@ LFM.prototype = {
             name = lfm.name;
             item = lfm.item;
 
-        // 初めて設定するオブジェクトには
-        // タイムスタンプから生成したクラス名を付ける
+        // add className consisting of timestamp to object 
         } else {
             name = 'LFM-' + new Date().getTime();
             $container.addClass(name);
 
             item = $container.html();
 
-            // 作成したらオブジェクトを集めた配列に push
+            // push to array of LFM instances
             window.lfmObjs.push(this);
         }
 
         $container.children().remove();
 
-        // オプション設定
+        // options
         $.extend(this, {
-            $container: $container
+            queryURL: 'http://ws.audioscrobbler.com/2.0/?callback=?'
+            ,$container: $container
             ,$timerLabel: null
             ,name: name
             ,item: item
@@ -132,23 +138,23 @@ LFM.prototype = {
         });
     }
 
-    // 実際に表示を更新する関数
+    // function for displaying tracks
     ,updatetracks: function() {
         var tracks
         ;
 
         this.t = setEpoch(this.options.updateInterval);
 
-        // 次の更新を予約
+        // auto update
         if (this.options.autoUpdate) {
-            // 時刻表示ラベルの追加
+            // label for next update time
             if (!this.$timerLabel) {
                 this.$timerLabel = $('<div/>')
                     .addClass('lfm_update')
                     .appendTo(this.$container.parent());
             }
 
-            // 次の更新までの残り時間を表示
+            // display time for next update
             if (!this.timer.sub) {
                 this.timer.sub = setInterval(
                     scope(function() {
@@ -163,39 +169,40 @@ LFM.prototype = {
                     }, this), 1000);
             }
 
-            // 次の更新を予約
+            // reservation of update
             this.timer.main = setTimeout(scope(this.updatetracks, this)
                 ,this.options.updateInterval * 1000);
         }
 
-        // 前回の更新が終わっていないならここで戻る
+        // avoid duplication of updates
         if (this.updating) {
             return;
         } else {
             this.updating = true;
         }
 
-        $.getJSON('http://ws.audioscrobbler.com/2.0/?callback=?', {
-            method: 'user.getrecenttracks'
-            ,format: 'json'
-            ,user: this.options.username
-            ,api_key: this.options.apikey
-            ,limit: this.options.number
-            ,nowplaying: true
-            // すでに読んだことがあるならば、
-            // 一番新しいもの以降を読む
-            ,from: this.tracks.length > 0 ?
-                        this.tracks[this.tracks[0].uts == 0 ? 1 : 0].uts : 0
+        // query for tracks to Last.FM
+        $.getJSON(this.options.queryURL, {
+            method      : 'user.getrecenttracks'
+            ,format     : 'json'
+            ,user       : this.options.username
+            ,api_key    : this.options.apikey
+            ,limit      : this.options.number
+            ,nowplaying : true
+            // avoid duplication of tracks.
+            // get tracks which played after this timestamp.
+            ,from       : this.tracks.length > 0 ?
+                this.tracks[this.tracks[0].uts == 0 ? 1 : 0].uts : 0
 
         }, scope(function(data) {
-            // エラーが起こったらメッセージだけ表示して終了
+            // quit in errors
             if (data.error) {
                 return this.handleError(data);
             }
 
-            // トラックごとに表示する
+            // display tracks
             if ($.isArray(data.recenttracks.track)) {
-                // “now playing”が残っていたら予め消しておく
+                // remove `now playing' track
                 if (this.tracks.length > 0 && this.tracks[0].uts == 0) {
                     this.tracks.shift().item.remove();
                 }
@@ -204,18 +211,18 @@ LFM.prototype = {
                     ,scope(this.displaytrack, this));
             }
 
-            // 再生時刻を更新
+            // update playback time
             this.updateTime();
         }, this))
 
-        // 終了処理
+        // update finished
         .complete(function() {
             this.updating = false;
         })
         ;
     }
 
-    // トラックの情報を表示する
+    // display info of tracks
     ,displaytrack: function(i, info) {
         var then, seconds, minutes, $art, lastTrack
             ,interval = this.options.drawDelay
@@ -231,46 +238,47 @@ LFM.prototype = {
             }
         ;
 
-        // トラックの情報を表示するコンテナを追加
+        // box of track info
         track.$item = $(this.item).prependTo(this.$container).hide();
 
-        // 曲名・アーティスト名・アルバム名を表示
+        // diplay title, artist, and album
         $('.lfm_song',   track.$item).text(track.song);
         $('.lfm_artist', track.$item).text(track.artist);
         $('.lfm_album',  track.$item).text(track.album);
 
-        // Last.FMへのリンクを貼る
+        // link to Last.FM
         $('a', track.$item).attr({
             href: track.url
             ,title: 'Listen to ' + track.name + ' on Last.FM'
             ,target: '_blank'
         });
 
-        // 溢れた分を削除
+        // remove tracks to excess
         if (this.tracks.length + 1 > this.options.number) {
             this.tracks.pop().$item.delay(interval).remove();
         }
-        // 表示を（遅らせながら）開始
+
+        // fade-in display
         track.$item.delay(interval).fadeIn('slow');
 
-        // アルバムアートの表示
+        // search album arts
         try {
             track.art = stripslashes(info.image[this.imgSize]['#text']);
             if (!track.art) {
                 throw 0;
             }
 
-        // 見つからなければこっち
+        // another one
         } catch (e) {
             track.art = this.options.noart;
             showArtistImage = true;
         }
 
-        // アルバムの画像が見つからず、しかもアーティストの画像を
-        // 表示する設定ならば探しに行く
+        // if `showArtistImage' options is true,
+        // search artist image when you can't find album arts.
         $art = $('.lfm_art', track.$item);
         if (showArtistImage && this.options.showArtistArt) {
-            $.getJSON('http://ws.audioscrobbler.com/2.0/?callback=?', {
+            $.getJSON(this.options.queryURL, {
                 method: 'artist.getimages'
                 ,format: 'json'
                 ,artist: track.artist
@@ -278,26 +286,27 @@ LFM.prototype = {
                 ,limit: 1
             }, curry(this.drawimage, this)($art));
 
-        // そうでなければこっち
+        // usual image flow
         } else {
             imgTag($art, track.art, track.album);
         }
 
-        // トラック一覧に情報を追加
+        // store for next update
         this.tracks.unshift(track);
 
-        // 全部終わったらコールバックを実行する
+        // execute callback when complete displaying
         if (i == this.options.number - 1) {
             this.options.onComplete.call(this);
         }
     }
 
-    // 再生時刻の表示を更新する
+    // update playback time
     ,updateTime: function() {
         $.each(this.tracks, scope(function(i, track) {
             var then, seconds, minutes
             ;
 
+            // `now playing'
             if (track.uts == 0) {
                 seconds = -1;
 
@@ -307,6 +316,7 @@ LFM.prototype = {
                 minutes = parseInt(seconds / 60)
             }
 
+            // format time
             $('.lfm_datetime', track.$item).text(
                 seconds < 0
                     ? 'now playing' :
@@ -329,7 +339,7 @@ LFM.prototype = {
         }, this));
     }
 
-    // アーティストの画像を探して表示する
+    // search for artist art
     ,drawimage: function($art, data) {
         var i = 0
             ,sizes ,img
@@ -337,20 +347,21 @@ LFM.prototype = {
 
         try {
             sizes = data.images.image.sizes.size;
-            // 設定されたサイズの画像を探す
+
+            // search specified size of images
             while (sizes[i].name.indexOf(this.options.artSize, 0) < 0 ) {
                 i++;
             }
             img = sizes[i]['#text'];
             imgTag($art, stripslashes(img), data.images['@attr'].artist);
 
-        // 画像が見つからなければこっち
+        // if not found, use `noart image'
         } catch (e) {
             imgTag($art, this.options.noart);
         }
     }
 
-    // エラーが起こったらここに来る
+    // show erros
     ,handleError: function(data) {
         this.$container.children().remove();
         var $item = $(this.item).prependTo(this.$container);
@@ -359,7 +370,7 @@ LFM.prototype = {
     }
 };
 
-// '10m'のような時間を表す文字列を解析する
+// parse time string
 function parseNum(i) {
     i = i + '';
     return (
@@ -370,7 +381,7 @@ function parseNum(i) {
     );
 }
 
-// 様々な時刻を返す
+// prepare various timestamps
 function setEpoch(num) {
     var now = new Date()
         ,t = {
@@ -404,14 +415,14 @@ function setEpoch(num) {
     return t;
 }
 
-// バックスラッシュを除く
+// remove backslashes
 function stripslashes(str) {
     return (str + '')
         .replace(/\0/g, '0')
         .replace(/\\([\\'"])/g, '$1');
 }
 
-// <img>タグを挿入する
+// insert <img>
 function imgTag($item, url, alt) {
     $('<img/>')
         .attr({
@@ -422,8 +433,7 @@ function imgTag($item, url, alt) {
     ;
 }
 
-// prototype.js's bind() in jQuery
-// http://16c.jp/2008/0528214632.php
+// bogus prototype.js's bind() ;)
 function scope(f, t) {
     return function(){
         return f.apply(t, arguments);
@@ -453,7 +463,7 @@ function curry(f, t) {
 }
 
 
-// メソッドを登録する
+// register LFM method
 $.fn.lastFM = function(options) {
     $(this).each(function() {
         new LFM(options, this);
