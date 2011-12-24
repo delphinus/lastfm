@@ -301,7 +301,6 @@ LFM.prototype = {
                 track.uts >= this.t.lastYear
                     ? then.strftime('Last Year %m/%d %I:%M %p') :
                       then.strftime('%Y/%m/%d %I:%M %p')
-                ;
             );
         }, this));
     }
