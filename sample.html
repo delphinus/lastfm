@@ -2,8 +2,8 @@
 <html>
     <head>
         <title>Last.fm for jQuery sample page</title>
+        <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.4.1/build/cssfonts/cssfonts-min.css">
-        <link rel="stylesheet" type="text/css" href="default.css">
         <link rel="stylesheet" type="text/css" href="lastfm.css">
     </head>
     <body>
@@ -44,6 +44,12 @@
                     //Done
                 }
             });
+
+            /*@cc_on
+                @if (@_jscript_version < 5.7)
+                    $('lfm_overlay').hidden();
+                @end
+            @*/
         </script>
     </body>
 </html>
