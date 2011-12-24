@@ -106,3 +106,7 @@ dd
     text-align: center;
     margin: 0;
 }
+.lfm_overlay
+{
+    /display: none;
+}
