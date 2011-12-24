@@ -25,4 +25,25 @@ Last.FM for jQuery
 </dl>
 ```
 
+### Javascript ###
+
+```javascript
+$('#lastfm').lastFM({
+    username: 'delphinus_iddqd' // account name to display
+    ,apikey: 'xxxxx'            // your apikey
+    ,number: 10                 // tracks
+    ,artSize: 'large'           // size of picture
+    ,noart: 'noartwork.gif'     // for tracks that have no pictures
+    ,showArtistArt: true
+        // if true, album arts are displayed instead of artist arts.
+    ,autoUpdate: true
+        // if true, list is being updated in some interval.
+    ,updateInterval: '10m'
+        // if autoUpdate is true, this interval is used.
+        // you can use prefix: h => hours, m => minutes, s => seconds
+    ,onComplete: function(){}
+        // callback to be called when query will finish.
+});
+```
+
 [lastfm]: http://www.lastfm.jp/home "Home – Last.fm"
