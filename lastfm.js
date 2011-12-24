@@ -263,7 +263,7 @@ LFM.prototype = {
         this.tracks.unshift(track);
 
         // 全部終わったらコールバックを実行する
-        if (i == this.settings.number - 1) {
+        if (i == this.options.number - 1) {
             this.options.onComplete.call(this);
         }
     }
@@ -314,7 +314,7 @@ LFM.prototype = {
         try {
             sizes = data.images.image.sizes.size;
             // 設定されたサイズの画像を探す
-            while (sizes[i].name.indexOf(this.settings.artSize, 0) < 0 ) {
+            while (sizes[i].name.indexOf(this.options.artSize, 0) < 0 ) {
                 i++;
             }
             img = sizes[i]['#text'];
@@ -322,7 +322,7 @@ LFM.prototype = {
 
         // 画像が見つからなければこっち
         } catch (e) {
-            imgTag(art, this.settings.noart);
+            imgTag(art, this.options.noart);
         }
     }
 
