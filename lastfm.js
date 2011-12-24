@@ -117,7 +117,7 @@ LFM.prototype = {
         this.t = setEpoch(this.options.updateInterval);
 
         // 次の更新を予約
-        if (this.optiosn.autoUpdate) {
+        if (this.options.autoUpdate) {
             // 時刻表示ラベルの追加
             if (!this.timerLabel) {
                 this.timerLabel = $('<div/>')
