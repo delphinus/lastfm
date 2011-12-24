@@ -10,6 +10,7 @@
         <h1>Last.FM for jQuery サンプルページ</h1>
 
         <h2>サイドバーに置くタイプ</h2>
+        <button id="updateSidebar">表示更新</button>
 
         <dl id="sidebar">
             <dt>Last.FM 最近再生した曲</dt>
@@ -30,6 +31,8 @@
         </dl>
 
         <h2>横に広いタイプ</h2>
+        <button id="updateWide">表示更新</button>
+
         <dl id="wide">
             <dt>Last.FM 最近再生した曲</dt>
             <dd>
@@ -56,36 +59,45 @@
         <script src="lastfm.js"></script>
         <script>
             window.TEST_MODE = true;
-            $('#lastfm1').lastFM({
-                username       : 'delphinus_iddqd'
-                ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
-                ,number        : 10
-                ,artSize       : 'small'
-                ,noart         : 'noartwork.gif'
-                ,showArtistArt : true
-                ,autoUpdate    : true
-                ,updateInterval: '10m'
-                ,drawDelay     : true
-                ,fadeDuration  : 500
-                ,onComplete    : function(){
-                    //Done
-                }
-            });
-            $('#lastfm2').lastFM({
-                username       : 'delphinus_iddqd'
-                ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
-                ,number        : 8
-                ,artSize       : 'large'
-                ,noart         : 'noartwork.gif'
-                ,showArtistArt : true
-                ,autoUpdate    : true
-                ,updateInterval: '10m'
-                ,drawDelay     : true
-                ,fadeDuration  : 500
-                ,onComplete    : function(){
-                    //Done
-                }
-            });
+
+            function updateSidebar() {
+                $('#lastfm1').lastFM({
+                    username       : 'delphinus_iddqd'
+                    ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
+                    ,number        : 10
+                    ,artSize       : 'small'
+                    ,noart         : 'noartwork.gif'
+                    ,showArtistArt : true
+                    ,autoUpdate    : true
+                    ,updateInterval: '10m'
+                    ,drawDelay     : true
+                    ,fadeDuration  : 500
+                    ,onComplete    : function(){
+                        //Done
+                    }
+                });
+            }
+
+            function updateWide() {
+                $('#lastfm2').lastFM({
+                    username       : 'delphinus_iddqd'
+                    ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
+                    ,number        : 8
+                    ,artSize       : 'large'
+                    ,noart         : 'noartwork.gif'
+                    ,showArtistArt : true
+                    ,autoUpdate    : true
+                    ,updateInterval: '10m'
+                    ,drawDelay     : true
+                    ,fadeDuration  : 500
+                    ,onComplete    : function(){
+                        //Done
+                    }
+                });
+            }
+
+            $('#updateSidebar').on('click', updateSidebar).trigger('click');
+            $('#updateWide').on('click', updateWide).trigger('click');
         </script>
     </body>
 </html>

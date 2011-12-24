@@ -40,8 +40,10 @@ var _log = function(msg) {
 LFM.prototype = {
     // default option values
     defaults: {
+        // Last.FM query URL
+        queryURL: 'http://ws.audioscrobbler.com/2.0/?callback=?'
         // account name to display
-        username: 'delphinus_iddqd'
+        ,username: 'delphinus_iddqd'
         // Last.FM API Key
         ,apikey: 'fca0142adfe95a7fb622a63d28b7d1a5'
         // number of tracks to display
@@ -89,14 +91,16 @@ LFM.prototype = {
         }
 
         if (found) {
+            _log(lfm);
             // stop timers
             for (i in lfm.timer) {
                 clearInterval(lfm.timer[i]);
             }
 
             // remove label for next update
-            if (lfm.$timerLabel) {
-                lfm.$timerLabel.remove();
+            if (lfm.timerLabelID) {
+                _log(lfm.timerLabelID);
+                $('#' + lfm.timerLabelID).remove();
             }
 
             name = lfm.name;
@@ -117,9 +121,8 @@ LFM.prototype = {
 
         // options
         $.extend(this, {
-            queryURL: 'http://ws.audioscrobbler.com/2.0/?callback=?'
-            ,$container: $container
-            ,$timerLabel: null
+            $container: $container
+            ,timerLabelID: null
             ,name: name
             ,item: item
             ,options: options
@@ -148,8 +151,11 @@ LFM.prototype = {
         // auto update
         if (this.options.autoUpdate) {
             // label for next update time
-            if (!this.$timerLabel) {
-                this.$timerLabel = $('<div/>')
+            if (!this.timerLabelID) {
+                this.timerLabelID = 'LFM_timer-' + new Date().getTime();
+                _log(this.timerLabelID);
+                $('<div/>')
+                    .attr({id: this.timerLabelID})
                     .addClass('lfm_update')
                     .appendTo(this.$container.parent());
             }
@@ -165,7 +171,7 @@ LFM.prototype = {
                                         .strftime('next update: %r ')
                                     + '( ' + sec + 's )';
                         ;
-                        this.$timerLabel.text(text);
+                        $('#' + this.timerLabelID).text(text);
                     }, this), 1000);
             }
 
