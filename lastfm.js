@@ -395,7 +395,7 @@ function imgTag($item, url, alt) {
         .attr({
             src: url
             ,alt: alt ? alt : null
-        }
+        })
         .appendTo($item)
     ;
 }
