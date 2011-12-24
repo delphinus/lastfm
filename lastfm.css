@@ -52,7 +52,10 @@ dd
     display: block;
 }
 .lastfm .lfm_art
-,.lastfm .lfm_art a
+{
+    position: relative;
+}
+.lastfm .lfm_art a
 {
     position: absolute;
 }
@@ -71,7 +74,6 @@ dd
 ,.lastfm .lfm_art a
 ,.lastfm .lfm_art img
 {
-    margin-left: 0;
     width: 32px;
     height: 32px;
 }
