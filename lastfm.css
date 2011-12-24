@@ -49,13 +49,9 @@ dd
 ,.lastfm .lfm_song
 ,.lastfm .lfm_artist
 {
-    display: block;
 }
 .lastfm .lfm_art
-{
-    position: relative;
-}
-.lastfm .lfm_art a
+,.lastfm .lfm_art a
 {
     position: absolute;
 }
