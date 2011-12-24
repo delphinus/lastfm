@@ -1,0 +1,83 @@
+.lastfm
+{
+    list-style-type: none;
+    padding: 3px 0 !important;
+    height: 433px;
+}
+.lastfm li
+{
+    clear: both;
+    height: 36px;
+    margin: 3px 5px !important;
+    padding: 2px 5px;
+    position: relative;
+    background-color: #e8d3c7;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.lastfm .lfm_art
+,.lastfm .lfm_overlay
+,.lastfm .lfm_song
+,.lastfm .lfm_artist
+{
+    display: block;
+}
+.lastfm .lfm_art
+{
+    position: absolute;
+}
+.lastfm .lfm_art a
+{
+    position: absolute;
+    background: none !important;
+    padding-left: 0 !important;
+	z-index: 10000;
+}
+.lastfm .lfm_overlay
+,.lastfm a
+{
+    top: 0;
+    left: 0;
+}
+.lastfm .lfm_art
+,.lastfm .lfm_art a
+,.lastfm .lfm_art img
+{
+	width: 32px;
+	height: 32px;
+    float: left;
+}
+.lastfm .lfm_art img
+{
+    margin-top: 2px;
+    border-width: 0;
+}
+.lastfm .lfm_song
+{
+	font-weight: bold;
+}
+.lastfm .lfm_song
+,.lastfm .lfm_artist
+,.lastfm .lfm_datetime
+{
+    margin-left: 40px;
+	font-size: 10px;
+	white-space: nowrap;
+	overflow:hidden;
+    height: 12px;
+    width: 148px;
+    float: left;
+}
+.lastfm .lfm_datetime
+{
+    color: maroon;
+    text-align: right;
+}
+.lfm_update
+{
+    width: 208px;
+    font-size: 85%;
+    text-align: center;
+    margin: 0 5px 0 15px;
+}

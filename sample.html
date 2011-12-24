@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Last.fm for jQuery sample page</title>
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.4.1/build/cssfonts/cssfonts-min.css">
+        <link rel="stylesheet" type="text/css" href="default.css">
+        <link rel="stylesheet" type="text/css" href="lastfm.css">
+    </head>
+    <body>
+        <dl>
+            <dt>Last.FM Recently Played</dt>
+            <dd>
+                <ul id="lastfm" class="lastfm">
+                    <li>
+                        <div class="lfm_art">
+                            <a href="#">
+                                <img src="lfm_overlay.png" alt="CD" class="lfm_overlay">
+                            </a>
+                        </div>
+                        <div class="lfm_song"></div>
+                        <div class="lfm_artist"></div>
+                        <div class="lfm_datetime"></div>
+                    </li>
+                </ul>
+            </dd>
+        </dl>
+        <script src="https://www.google.com/jsapi"></script>
+        <script>google.load('jquery', '1.7.1')</script>
+        <script src="lastfm.js"></script>
+        <script>
+            window.TEST_MODE = true;
+            $('#lastfm').lastFM({
+                username       : 'delphinus_iddqd'
+                ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
+                ,number        : 10
+                ,artSize       : 'small'
+                ,noart         : 'noartwork.gif'
+                ,showArtistArt : true
+                ,autoUpdate    : true
+                ,updateInterval: '10m'
+                ,drawDelay     : true
+                ,drawInterval  : 500
+                ,onComplete    : function(){
+                    //Done
+                }
+            });
+        </script>
+    </body>
+</html>

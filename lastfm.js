@@ -7,16 +7,32 @@ if (!Date.prototype.strftime) {
     };
 }
 
-(function($){
+// デバッグコンソール
+if (!window.console) {
+    window.console = {
+        log: function(){}
+    };
+}
 
 // Last.FM オブジェクトを納める配列
 window.lfmObjs = [];
 
-// コンストラクタ
-var LFM = function(options, item) {
-    this.init(options, $(item));
-    this.updatetracks();
-};
+(function($){
+
+    // デバッグ用関数
+var _log = function(msg) {
+        if (!window.TEST_MODE || !window.console) {
+            return false;
+        }
+        console.log(msg);
+    }
+
+    // コンストラクタ
+    ,LFM = function(options, container) {
+        this.init(options, $(container));
+        this.updatetracks();
+    }
+;
 
 LFM.prototype = {
     // オプションの初期値
@@ -46,67 +62,74 @@ LFM.prototype = {
     }
 
     // 初期設定
-    ,init: function(options, $item) {
-        var i, j, lfm, cls
+    ,init: function(options, $container) {
+        var lfm, name, item, found
+            ,i = 0
+            ,defaults = this.defaults
+            ,options = $.extend({}, defaults, options)
         ;
 
-        this.$item = $item;
-        this.container = null;
+        options.updateInterval = parseNum(options.updateInterval);
 
         // 今までに作成した LFM オブジェクトの一覧を走査して
         // 対象の要素に対応する LFM オブジェクトがすでに存在するならばそれを使う
-        for (i = 0; i < lfmObjs.length, lfm = lfmObjs[i]; i++) {
-            if (!this.$item.hasClass(lfm.cls)) {
-                continue;
+        while (lfm = lfmObjs[i]) {
+            if ($container.hasClass(lfm.name)) {
+                found = true;
+                break;
+            } else {
+                i++;
             }
-
-            this.container = lfm.obj.container;
-            // タイマーが稼働しているなら止める
-            for (j in lfm.obj.timer) {
-                clearInterval(lfm.obj.timer[j]);
-            }
-            // 更新時刻表示ラベルがあれば消しておく
-            if (lfm.obj.$timerLabel) {
-                lfm.obj.$timerLabel.remove();
-            }
-
-            // このオブジェクトに入れ替える
-            delete lfm.obj;
-            lfm.obj = this;
-            break;
         }
+
+        if (found) {
+            // タイマーが稼働しているなら止める
+            for (i in lfm.timer) {
+                clearInterval(lfm.timer[i]);
+            }
+
+            // 更新時刻表示ラベルがあれば消しておく
+            if (lfm.$timerLabel) {
+                lfm.$timerLabel.remove();
+            }
+
+            name = lfm.name;
+            item = lfm.item;
 
         // 初めて設定するオブジェクトには
         // タイムスタンプから生成したクラス名を付ける
-        if (!this.container) {
-            cls = 'LFM-' + new Date().getTime();
-            this.$item.addClass( cls );
-            lfmObjs.push({
-                cls: cls
-                ,obj: this
-            });
-            this.container = this.$item.html();
+        } else {
+            name = 'LFM-' + new Date().getTime();
+            $container.addClass(name);
+
+            item = $container.html();
+
+            // 作成したらオブジェクトを集めた配列に push
+            window.lfmObjs.push(this);
         }
 
-        this.$item.children().remove();
-        this.t = {};
-        this.tracks = [];
-        this.timer = {
-            main: null
-            ,sub: null
-        };
-        this.updating = false;
-        this.lastRemoved = null;
+        $container.children().remove();
 
         // オプション設定
-        this.options = $.extend({}, this.defaults, options);
-        this.imgSize = this.options.artSize == 'small' ? 0 :
-            this.options.artSize == 'medium' ? 1 :
-            this.options.artSize == 'large' ? 2 :
-            0
-        ;
-        this.options.updateInterval = parseNum(
-            this.options.updateInterval, this.defaults.updateInterval);
+        $.extend(this, {
+            $container: $container
+            ,$timerLabel: null
+            ,name: name
+            ,item: item
+            ,options: options
+            ,updating: false
+            ,lastRemoved: null
+            ,t: {}
+            ,tracks: []
+            ,timer: {
+                main: null
+                ,sub: null
+            }
+            ,imgSize: options.artSize == 'small' ? 0 :
+                options.artSize == 'medium' ? 1 :
+                options.artSize == 'large' ? 2 :
+                0
+        });
     }
 
     // 実際に表示を更新する関数
@@ -119,10 +142,10 @@ LFM.prototype = {
         // 次の更新を予約
         if (this.options.autoUpdate) {
             // 時刻表示ラベルの追加
-            if (!this.timerLabel) {
-                this.timerLabel = $('<div/>')
+            if (!this.$timerLabel) {
+                this.$timerLabel = $('<div/>')
                     .addClass('lfm_update')
-                    .appendTo(this.$item.parent());
+                    .appendTo(this.$container.parent());
             }
 
             // 次の更新までの残り時間を表示
@@ -136,8 +159,8 @@ LFM.prototype = {
                                         .strftime('next update: %r ')
                                     + '( ' + sec + 's )';
                         ;
-                        this.timerLabel.text(text);
-                    } ,this), 1000);
+                        this.$timerLabel.text(text);
+                    }, this), 1000);
             }
 
             // 次の更新を予約
@@ -145,8 +168,7 @@ LFM.prototype = {
                 ,this.options.updateInterval * 1000);
         }
 
-        // 前回の更新が終わっていないか、エラーで終了したならば、
-        // 実際には表示しないでここで戻る
+        // 前回の更新が終わっていないならここで戻る
         if (this.updating) {
             return;
         } else {
@@ -165,7 +187,7 @@ LFM.prototype = {
             ,from: this.tracks.length > 0 ?
                         this.tracks[this.tracks[0].uts == 0 ? 1 : 0].uts : 0
 
-        }, scope( function( data ) {
+        }, scope(function(data) {
             // エラーが起こったらメッセージだけ表示して終了
             if (data.error) {
                 return this.handleError(data);
@@ -184,31 +206,33 @@ LFM.prototype = {
 
             // 再生時刻を更新
             this.updateTime();
-            // 更新終了
+        }, this))
+
+        // 終了処理
+        .complete(function() {
             this.updating = false;
-        }, this));
+        })
+        ;
     }
 
     // トラックの情報を表示する
-    ,displaytrack: function(i, item) {
-        var interval = this.options.drawDelay
+    ,displaytrack: function(i, info) {
+        var then, seconds, minutes, $art, lastTrack
+            ,interval = this.options.drawDelay
                 ? this.options.drawInterval * i : 0
             ,showArtistImage = false
             ,track = {
-                url: stripslashes(item.url)
-                ,song: item.name
-                ,artist: item.artist['#text']
-                ,album: item.album['#text']
-                ,uts: item['@attr'] && item['@attr'].nowplaying
-                    ? 0 : item.date.uts
+                url: stripslashes(info.url)
+                ,song: info.name
+                ,artist: info.artist['#text']
+                ,album: info.album['#text']
+                ,uts: info['@attr'] && info['@attr'].nowplaying
+                    ? 0 : info.date.uts
             }
-            ,then, seconds, minutes, art, lastTrack
         ;
 
         // トラックの情報を表示するコンテナを追加
-        track.$item = $(this.container).prependTo(this.$item);
-        // 一旦隠す
-        track.$item.hide();
+        track.$item = $(this.item).prependTo(this.$container).hide();
 
         // 曲名・アーティスト名・アルバム名を表示
         $('.lfm_song',   track.$item).text(track.song);
@@ -231,8 +255,8 @@ LFM.prototype = {
 
         // アルバムアートの表示
         try {
-            track.art = stripslashes(item.image[this.imgSize]['#text']);
-            if (! track.art) {
+            track.art = stripslashes(info.image[this.imgSize]['#text']);
+            if (!track.art) {
                 throw 0;
             }
 
@@ -244,7 +268,7 @@ LFM.prototype = {
 
         // アルバムの画像が見つからず、しかもアーティストの画像を
         // 表示する設定ならば探しに行く
-        art = $('.lfm_art', track.$item)
+        $art = $('.lfm_art', track.$item);
         if (showArtistImage && this.options.showArtistArt) {
             $.getJSON('http://ws.audioscrobbler.com/2.0/?callback=?', {
                 method: 'artist.getimages'
@@ -252,11 +276,11 @@ LFM.prototype = {
                 ,artist: track.artist
                 ,api_key: this.options.apikey
                 ,limit: 1
-            }, curry(this.drawimage, this)(art));
+            }, curry(this.drawimage, this)($art));
 
         // そうでなければこっち
         } else {
-            imgTag(art, track.art, track.album);
+            imgTag($art, track.art, track.album);
         }
 
         // トラック一覧に情報を追加
@@ -283,7 +307,7 @@ LFM.prototype = {
                 minutes = parseInt(seconds / 60)
             }
 
-            $('.lfm_datetime', track.$item ).text(
+            $('.lfm_datetime', track.$item).text(
                 seconds < 0
                     ? 'now playing' :
                 seconds < 600
@@ -306,7 +330,7 @@ LFM.prototype = {
     }
 
     // アーティストの画像を探して表示する
-    ,drawimage: function(art, data) {
+    ,drawimage: function($art, data) {
         var i = 0
             ,sizes ,img
         ;
@@ -318,34 +342,32 @@ LFM.prototype = {
                 i++;
             }
             img = sizes[i]['#text'];
-            imgTag(art, stripslashes(img), data.images['@attr'].artist);
+            imgTag($art, stripslashes(img), data.images['@attr'].artist);
 
         // 画像が見つからなければこっち
         } catch (e) {
-            imgTag(art, this.options.noart);
+            imgTag($art, this.options.noart);
         }
     }
 
     // エラーが起こったらここに来る
     ,handleError: function(data) {
-        this.$item.children().remove();
-        var $item = $(this.container).prependTo(this.$item);
-        $('.lfm_song',   item).text('error: '   + data.error);
-        $('.lfm_artist', item).text('message: ' + data.message);
+        this.$container.children().remove();
+        var $item = $(this.item).prependTo(this.$container);
+        $('.lfm_song',   $item).text('error: '   + data.error);
+        $('.lfm_artist', $item).text('message: ' + data.message);
     }
 };
 
 // '10m'のような時間を表す文字列を解析する
-function parseNum(i, def) {
+function parseNum(i) {
     i = i + '';
-    return
+    return (
         i.match(/(\d+)h$/i) ? RegExp.$1 * 3600 :
         i.match(/(\d+)m$/i) ? RegExp.$1 * 60   :
         i.match(/(\d+)s$/i) ? RegExp.$1 * 1    :
-        i.match(/(\d+)/)    ? RegExp.$1 * 1    :
-        def == 0            ? 600              :
-        parseNum(def, 0)
-    ;
+        i.match(/(\d+)/)    ? RegExp.$1 * 1    : 600
+    );
 }
 
 // 様々な時刻を返す
@@ -391,7 +413,7 @@ function stripslashes(str) {
 
 // <img>タグを挿入する
 function imgTag($item, url, alt) {
-    $('<img />')
+    $('<img/>')
         .attr({
             src: url
             ,alt: alt ? alt : null
