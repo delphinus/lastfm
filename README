@@ -35,6 +35,7 @@ $('#lastfm').lastFM({
     ,artSize: 'large'           // size of picture
     ,noart: 'noartwork.gif'     // for tracks that have no pictures
     ,showArtistArt: true
+        // テスト
         // if true, album arts are displayed instead of artist arts.
     ,autoUpdate: true
         // if true, list is being updated in some interval.
