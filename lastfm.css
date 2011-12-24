@@ -59,6 +59,7 @@ dd
 {
     top: 0;
     left: 0;
+    _left: -45px;
 }
 .lastfm .lfm_art
 ,.lastfm .lfm_art a
