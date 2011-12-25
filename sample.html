@@ -4,7 +4,7 @@
         <title>Last.FM for jQuery sample page</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.4.1/build/cssfonts/cssfonts-min.css">
-        <link rel="stylesheet" type="text/css" href="lastfm.css">
+        <link rel="stylesheet" type="text/css" href="./css/lastfm.css">
     </head>
     <body>
         <h1>Last.FM for jQuery サンプルページ</h1>
@@ -19,7 +19,7 @@
                     <li>
                         <div class="lfm_art">
                             <a href="#">
-                                <img src="lfm_overlay.png" alt="CD" class="lfm_overlay">
+                                <img src="./images/lfm_overlay.png" alt="CD" class="lfm_overlay">
                             </a>
                         </div>
                         <div class="lfm_song"></div>
@@ -40,7 +40,7 @@
                     <li>
                         <div class="lfm_art">
                             <a href="#">
-                                <img src="lfm_overlay.png" alt="CD" class="lfm_overlay">
+                                <img src="./images/lfm_overlay.png" alt="CD" class="lfm_overlay">
                             </a>
                         </div>
                         <div class="lfm_song"></div>
@@ -73,63 +73,31 @@
         </dl>
 
         <!-- strftime.js があると時刻表示が読みやすくなります -->
-        <script src="strftime.js"></script>
+        <script src="./js/strftime.js"></script>
         <!-- -->
         <script src="https://www.google.com/jsapi"></script>
         <script>google.load('jquery', '1.7.1')</script>
-        <script src="lastfm.js"></script>
+        <script src="./js/lastfm.js"></script>
         <script>
             $('#updateSidebar').on('click', function() {
                 $('#lastfm1').lastFM({
-                    username       : 'delphinus_iddqd'
-                    ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
-                    ,number        : 10
-                    ,artSize       : 'small'
-                    ,noart         : 'noartwork.gif'
-                    ,showArtistArt : true
-                    ,autoUpdate    : true
-                    ,updateInterval: '10m'
+                    artSize       : 'small'
                     ,drawDelay     : false
-                    ,showInterval  : null
-                    ,onComplete    : function(){
-                        //Done
-                    }
                 });
             }).trigger('click');
 
             $('#updateWide').on('click', function() {
                 $('#lastfm2').lastFM({
-                    username       : 'delphinus_iddqd'
-                    ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
-                    ,number        : 8
+                    number        : 8
                     ,artSize       : 'large'
-                    ,noart         : 'noartwork.gif'
-                    ,showArtistArt : true
-                    ,autoUpdate    : true
-                    ,updateInterval: '10m'
                     ,drawDelay     : false
-                    ,showInterval  : null
-                    ,onComplete    : function(){
-                        //Done
-                    }
                 });
             }).trigger('click');
 
             $('#updateFadeIn').on('click', function() {
                 $('#lastfm3').lastFM({
-                    username       : 'delphinus_iddqd'
-                    ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
-                    ,number        : 8
+                    number        : 8
                     ,artSize       : 'large'
-                    ,noart         : 'noartwork.gif'
-                    ,showArtistArt : true
-                    ,autoUpdate    : true
-                    ,updateInterval: '10m'
-                    ,drawDelay     : true
-                    ,showInterval  : 500
-                    ,onComplete    : function(){
-                        //Done
-                    }
                 });
             }).trigger('click');
         </script>
