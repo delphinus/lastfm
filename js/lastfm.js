@@ -67,7 +67,7 @@ LFM.prototype = {
         // this must be specified in milliseconds.
         ,showInterval: 500
         // callback to be called when query has finished.
-        ,onComplete: function(){}
+        ,onComplete: $.noop()
     } //}}}
 
     // initialization
