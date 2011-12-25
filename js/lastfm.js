@@ -42,7 +42,7 @@ var _log = function(msg) {
         }
     }
 
-    ,jqVersion = $.fn.jquery.replace(/\.(?=\d*)/, '')
+    ,jqVersion = $.fn.jquery.replace(/\.(?=\d*$)/, '')
 
     // constructor
     ,LFM = function(options, container) {
