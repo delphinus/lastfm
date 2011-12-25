@@ -51,6 +51,27 @@
             </dd>
         </dl>
 
+        <h2>フェイド・イン</h2>
+        <button id="updateFadeIn">表示更新</button>
+
+        <dl id="fadein">
+            <dt>Last.FM 最近再生した曲</dt>
+            <dd>
+                <ul id="lastfm3" class="lastfm">
+                    <li>
+                        <div class="lfm_art">
+                            <a href="#">
+                                <img src="lfm_overlay.png" alt="CD" class="lfm_overlay">
+                            </a>
+                        </div>
+                        <div class="lfm_song"></div>
+                        <div class="lfm_artist"></div>
+                        <div class="lfm_datetime"></div>
+                    </li>
+                </ul>
+            </dd>
+        </dl>
+
         <!-- strftime.js があると時刻表示が読みやすくなります -->
         <script src="strftime.js"></script>
         <!-- -->
@@ -58,9 +79,7 @@
         <script>google.load('jquery', '1.7.1')</script>
         <script src="lastfm.js"></script>
         <script>
-            window.TEST_MODE = true;
-
-            function updateSidebar() {
+            $('#updateSidebar').on('click', function() {
                 $('#lastfm1').lastFM({
                     username       : 'delphinus_iddqd'
                     ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
@@ -70,15 +89,15 @@
                     ,showArtistArt : true
                     ,autoUpdate    : true
                     ,updateInterval: '10m'
-                    ,drawDelay     : true
-                    ,showInterval  : 500
+                    ,drawDelay     : false
+                    ,showInterval  : null
                     ,onComplete    : function(){
                         //Done
                     }
                 });
-            }
+            }).trigger('click');
 
-            function updateWide() {
+            $('#updateWide').on('click', function() {
                 $('#lastfm2').lastFM({
                     username       : 'delphinus_iddqd'
                     ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
@@ -89,15 +108,30 @@
                     ,autoUpdate    : true
                     ,updateInterval: '10m'
                     ,drawDelay     : false
+                    ,showInterval  : null
+                    ,onComplete    : function(){
+                        //Done
+                    }
+                });
+            }).trigger('click');
+
+            $('#updateFadeIn').on('click', function() {
+                $('#lastfm3').lastFM({
+                    username       : 'delphinus_iddqd'
+                    ,apikey        : 'fca0142adfe95a7fb622a63d28b7d1a5'
+                    ,number        : 8
+                    ,artSize       : 'large'
+                    ,noart         : 'noartwork.gif'
+                    ,showArtistArt : true
+                    ,autoUpdate    : true
+                    ,updateInterval: '10m'
+                    ,drawDelay     : true
                     ,showInterval  : 500
                     ,onComplete    : function(){
                         //Done
                     }
                 });
-            }
-
-            $('#updateSidebar').on('click', updateSidebar).trigger('click');
-            $('#updateWide').on('click', updateWide).trigger('click');
+            }).trigger('click');
         </script>
     </body>
 </html>

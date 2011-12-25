@@ -90,8 +90,6 @@ LFM.prototype = {
 
         // if object has found
         if (i < window.lfmObjs.length) {
-            _log('92 : ');
-            _log(lfm);
             // stop timers
             for (j in lfm.timer) {
                 clearInterval(lfm.timer[j]);
@@ -159,12 +157,8 @@ LFM.prototype = {
                     .addClass('lfm_update')
                     .appendTo(this.$container.parent());
                 label.attr({id: 'LFM_timer-' + $.now()});
-                _log('158 : ');
-                _log(label);
 
                 this.$timerLabel = label;
-                _log('161 : ');
-                _log(this.$timerLabel);
             }
 
             // display time for next update
@@ -217,7 +211,7 @@ LFM.prototype = {
             if ($.isArray(data.recenttracks.track)) {
                 // remove `now playing' track
                 if (this.tracks.length > 0 && this.tracks[0].uts == 0) {
-                    this.tracks.shift().item.remove();
+                    this.tracks.shift().$item.remove();
                 }
 
                 $.each(data.recenttracks.track.reverse()
@@ -229,9 +223,9 @@ LFM.prototype = {
         }, this))
 
         // update finished
-        .complete(function() {
+        .complete(scope(function() {
             this.updating = false;
-        })
+        }, this))
         ;
     } //}}}
 

@@ -26,6 +26,8 @@ h2
 
 button
 {
+    font-size: 120%;
+    margin-left: 3em;
     display: block;
 }
 
@@ -237,6 +239,114 @@ button
     text-align: right;
 }
 #wide .lfm_update
+{
+    font-size: 100%;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 2em;
+}
+/* }}} */
+
+/* フェイド・イン {{{ */
+#fadein
+{
+    margin: 1em 2em;
+}
+#fadein dt
+{
+    text-transform: uppercase;
+    font-weight: bold;
+}
+#fadein dt:before
+{
+    content: "» ";
+}
+#fadein dd
+{
+    width: 1024px;
+    margin: 0;
+    padding: 3px;
+    background-color: whitesmoke;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+#fadein .lastfm
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 3px 0;
+    height: 180px;
+}
+#fadein .lastfm li
+{
+    float: left;
+    height: 68px;
+    margin: 3px 5px;
+    padding: 7px 12px;
+    position: relative;
+    background-color: #e8d3c7;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+#fadein .lfm_art
+,#fadein .lfm_art a
+{
+    position: absolute;
+}
+#fadein .lfm_art a
+{
+    background: none;
+    padding-left: 0;
+}
+#fadein .lfm_overlay
+,#fadein a
+{
+    top: 0;
+    left: 0;
+}
+#fadein .lfm_art
+{
+    _left: 5px;
+}
+#fadein .lfm_overlay
+{
+    _display: none;
+}
+#fadein .lfm_art
+,#fadein .lfm_art a
+,#fadein .lfm_art img
+{
+    width: 64px;
+    height: 64px;
+}
+#fadein .lfm_art img
+{
+    margin-top: 2px;
+    border-width: 0;
+}
+#fadein .lfm_song
+{
+    font-weight: bold;
+}
+#fadein .lfm_song
+,#fadein .lfm_artist
+,#fadein .lfm_datetime
+{
+    margin-left: 72px;
+    font-size: 14px%;
+    white-space: nowrap;
+    overflow:hidden;
+    height: 16px;
+    width: 148px;
+}
+#fadein .lfm_datetime
+{
+    color: maroon;
+    text-align: right;
+}
+#fadein .lfm_update
 {
     font-size: 100%;
     font-weight: bold;
