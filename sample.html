@@ -15,7 +15,7 @@
         <dl id="sidebar">
             <dt>Last.FM 最近再生した曲</dt>
             <dd>
-                <ul id="lastfm1" class="lastfm">
+                <ul id="sidebar-view" class="lastfm">
                     <li>
                         <div class="lfm_art">
                             <a href="#">
@@ -36,7 +36,7 @@
         <dl id="wide">
             <dt>Last.FM 最近再生した曲</dt>
             <dd>
-                <ul id="lastfm2" class="lastfm">
+                <ul id="wide-view" class="lastfm">
                     <li>
                         <div class="lfm_art">
                             <a href="#">
@@ -57,11 +57,11 @@
         <dl id="fadein">
             <dt>Last.FM 最近再生した曲</dt>
             <dd>
-                <ul id="lastfm3" class="lastfm">
+                <ul id="fadein-view" class="lastfm">
                     <li>
                         <div class="lfm_art">
                             <a href="#">
-                                <img src="lfm_overlay.png" alt="CD" class="lfm_overlay">
+                                <img src="./images/lfm_overlay.png" alt="CD" class="lfm_overlay">
                             </a>
                         </div>
                         <div class="lfm_song"></div>
@@ -80,24 +80,24 @@
         <script src="./js/lastfm.js"></script>
         <script>
             $('#updateSidebar').on('click', function() {
-                $('#lastfm1').lastFM({
-                    artSize       : 'small'
-                    ,drawDelay     : false
+                $('#sidebar-view').lastFM({
+                    artSize    : 'small'
+                    ,drawDelay : false
                 });
             }).trigger('click');
 
             $('#updateWide').on('click', function() {
-                $('#lastfm2').lastFM({
-                    number        : 8
-                    ,artSize       : 'large'
-                    ,drawDelay     : false
+                $('#wide-view').lastFM({
+                    number     : 8
+                    ,artSize   : 'large'
+                    ,drawDelay : false
                 });
             }).trigger('click');
 
             $('#updateFadeIn').on('click', function() {
-                $('#lastfm3').lastFM({
-                    number        : 8
-                    ,artSize       : 'large'
+                $('#fadein-view').lastFM({
+                    number   : 8
+                    ,artSize : 'large'
                 });
             }).trigger('click');
         </script>
