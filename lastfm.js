@@ -395,14 +395,15 @@ function parseNum(i) { //{{{
 // prepare various timestamps
 function setEpoch(num) { //{{{
     var now = new Date()
+        ,time = now.getTime()
         ,t = {
             now       : now
-            ,today    : new Date(now.getTime())
-            ,yesterday: new Date(now.getTime() - 86400 * 1000)
-            ,lastWeek : new Date(now.getTime() - 6 * 86400 * 1000)
-            ,thisYear : new Date(now.getTime())
-            ,lastYear : new Date(now.getTime() - 365 * 86400)
-            ,next     : new Date(now.getTime() + num * 1000)
+            ,today    : new Date(time)
+            ,yesterday: new Date(time - 86400 * 1000)
+            ,lastWeek : new Date(time - 6 * 86400 * 1000)
+            ,thisYear : new Date(time)
+            ,lastYear : new Date(time - 365 * 86400)
+            ,next     : new Date(time + num * 1000)
         }
         ,k
     ;
