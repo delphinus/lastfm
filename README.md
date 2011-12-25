@@ -3,6 +3,13 @@ Last.FM for jQuery
 [Last.FM][last.fm] から再生履歴を取得して表示します。
 ブログのサイドバーに使う用途を想定しています。
 
+元ネタは [Last.FM for jQuery][lastfm_for_jquery] より拝借しました。
+基本的な機能は同じですが、オリジナルを次の点で拡張しています。
+
+1. 一定時間たつと自動で表示内容を更新する機能。
+2. 各曲の情報を順番にフェイド・インして表示する機能。
+3. [strftime.js][strftime.js] を使って再生時刻を表示する機能。
+
 使い方
 ------
 詳細は同梱の `sample.html` を見てください。
@@ -47,3 +54,4 @@ $('#lastfm').lastFM({
 
 [last.fm]: http://www.lastfm.jp/home "Home – Last.fm"
 [strftime.js]: http://hacks.bluesmoon.info/strftime/ "strftime: strftime for Javascript"
+[lastfm_for_jquery]: http://labs.engageinteractive.co.uk/lastfm/ "Engage Interactive Labs - Last.FM plugin for jQuery"
