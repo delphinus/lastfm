@@ -10,7 +10,7 @@ if (!Date.prototype.strftime) {
 // for debug
 if (!window.console) {
     window.console = {
-        log: function(){}
+        log: $.noop()
     };
 }
 
@@ -24,10 +24,11 @@ window.lfmObjs = [];
 
     // for debug
 var _log = function(msg) {
-        if (!window.TEST_MODE || !window.console) {
+        if (window.TEST_MODE && window.console) {
+            console.log(msg);
+        } else {
             return false;
         }
-        console.log(msg);
     }
 
     // constructor
@@ -39,7 +40,7 @@ var _log = function(msg) {
 
 LFM.prototype = {
     // default option values
-    defaults: {
+    defaults: { //{{{
         // Last.FM query URL
         queryURL: 'http://ws.audioscrobbler.com/2.0/?callback=?'
         // account name to display
@@ -66,14 +67,13 @@ LFM.prototype = {
         ,fadeDuration: 500
         // callback to be called when query has finished.
         ,onComplete: function(){}
-    }
+    } //}}}
 
     // initialization
-    ,init: function(options, $container) {
-        var lfm, name, item, found
-            ,i = 0
-            ,defaults = this.defaults
-            ,options = $.extend({}, defaults, options)
+    ,init: function(options, $container) { //{{{
+        var lfm, name, item, j
+            ,i = -1
+            ,options = $.extend({}, this.defaults, options)
         ;
 
         // translate updateInterval to integer
@@ -81,26 +81,24 @@ LFM.prototype = {
 
         // scan LFM instances.
         // if you discover object for target DOM, it will be used.
-        while (lfm = lfmObjs[i]) {
+        while (lfm = window.lfmObjs[++i]) {
             if ($container.hasClass(lfm.name)) {
-                found = true;
                 break;
-            } else {
-                i++;
             }
         }
 
-        if (found) {
+        // if object has found
+        if (i < window.lfmObjs.length) {
             _log(lfm);
             // stop timers
-            for (i in lfm.timer) {
-                clearInterval(lfm.timer[i]);
+            for (j in lfm.timer) {
+                clearInterval(lfm.timer[j]);
             }
 
             // remove label for next update
-            if (lfm.timerLabelID) {
-                _log(lfm.timerLabelID);
-                $('#' + lfm.timerLabelID).remove();
+            if (lfm.$timerLabel) {
+                _log(lfm.$timerLabel);
+                lfm.$timerLabel.remove();
             }
 
             name = lfm.name;
@@ -108,7 +106,7 @@ LFM.prototype = {
 
         // add className consisting of timestamp to object 
         } else {
-            name = 'LFM-' + new Date().getTime();
+            name = 'LFM-' + $.now();
             $container.addClass(name);
 
             item = $container.html();
@@ -121,28 +119,28 @@ LFM.prototype = {
 
         // options
         $.extend(this, {
-            $container: $container
-            ,timerLabelID: null
-            ,name: name
-            ,item: item
-            ,options: options
-            ,updating: false
-            ,lastRemoved: null
-            ,t: {}
-            ,tracks: []
-            ,timer: {
+            $container   : $container
+            ,$timerLabel : null
+            ,name        : name
+            ,item        : item
+            ,options     : options
+            ,updating    : false
+            ,lastRemoved : null
+            ,t           : {}
+            ,tracks      : []
+            ,timer       : {
                 main: null
                 ,sub: null
             }
-            ,imgSize: options.artSize == 'small' ? 0 :
+            ,imgSize     : options.artSize == 'small' ? 0 :
                 options.artSize == 'medium' ? 1 :
                 options.artSize == 'large' ? 2 :
                 0
         });
-    }
+    } //}}}
 
     // function for displaying tracks
-    ,updatetracks: function() {
+    ,updatetracks: function() { // {{{
         var tracks
         ;
 
@@ -150,14 +148,17 @@ LFM.prototype = {
 
         // auto update
         if (this.options.autoUpdate) {
+            var label;
+
             // label for next update time
-            if (!this.timerLabelID) {
-                this.timerLabelID = 'LFM_timer-' + new Date().getTime();
-                _log(this.timerLabelID);
-                $('<div/>')
-                    .attr({id: this.timerLabelID})
+            if (!this.$timerLabel) {
+                var label = $('<div/>')
                     .addClass('lfm_update')
                     .appendTo(this.$container.parent());
+                label.attr({id: 'LFM_timer-' + $.now()});
+                _log(label);
+
+                this.$timerLabel = label;
             }
 
             // display time for next update
@@ -165,13 +166,13 @@ LFM.prototype = {
                 this.timer.sub = setInterval(
                     scope(function() {
                         var sec = parseInt(
-                                this.t.next - new Date().getTime() / 1000)
+                                this.t.next - $.now() / 1000)
                             ,text = sec <= 0 ? 'loading...'
                                 : new Date(this.t.next * 1000)
                                         .strftime('next update: %r ')
                                     + '( ' + sec + 's )';
                         ;
-                        $('#' + this.timerLabelID).text(text);
+                        this.$timerLabel.text(text);
                     }, this), 1000);
             }
 
@@ -226,10 +227,10 @@ LFM.prototype = {
             this.updating = false;
         })
         ;
-    }
+    } //}}}
 
     // display info of tracks
-    ,displaytrack: function(i, info) {
+    ,displaytrack: function(i, info) { //{{{
         var then, seconds, minutes, $art, lastTrack
             ,interval = this.options.drawDelay
                 ? this.options.fadeDuration * i : 0
@@ -304,10 +305,10 @@ LFM.prototype = {
         if (i == this.options.number - 1) {
             this.options.onComplete.call(this);
         }
-    }
+    } //}}}
 
     // update playback time
-    ,updateTime: function() {
+    ,updateTime: function() { //{{{
         $.each(this.tracks, scope(function(i, track) {
             var then, seconds, minutes
             ;
@@ -343,10 +344,10 @@ LFM.prototype = {
                       then.strftime('%Y/%m/%d %I:%M %p')
             );
         }, this));
-    }
+    } //}}}
 
     // search for artist art
-    ,drawimage: function($art, data) {
+    ,drawimage: function($art, data) { //{{{
         var i = 0
             ,sizes ,img
         ;
@@ -365,19 +366,19 @@ LFM.prototype = {
         } catch (e) {
             imgTag($art, this.options.noart);
         }
-    }
+    } //}}}
 
     // show erros
-    ,handleError: function(data) {
+    ,handleError: function(data) { //{{{
         this.$container.children().remove();
         var $item = $(this.item).prependTo(this.$container);
         $('.lfm_song',   $item).text('error: '   + data.error);
         $('.lfm_artist', $item).text('message: ' + data.message);
-    }
+    } //}}}
 };
 
 // parse time string
-function parseNum(i) {
+function parseNum(i) { //{{{
     i = i + '';
     return (
         i.match(/(\d+)h$/i) ? RegExp.$1 * 3600 :
@@ -385,10 +386,10 @@ function parseNum(i) {
         i.match(/(\d+)s$/i) ? RegExp.$1 * 1    :
         i.match(/(\d+)/)    ? RegExp.$1 * 1    : 600
     );
-}
+} //}}}
 
 // prepare various timestamps
-function setEpoch(num) {
+function setEpoch(num) { //{{{
     var now = new Date()
         ,t = {
             now       : now
@@ -419,17 +420,17 @@ function setEpoch(num) {
         t[k] = t[k].getTime() / 1000;
     }
     return t;
-}
+} //}}}
 
 // remove backslashes
-function stripslashes(str) {
+function stripslashes(str) { //{{{
     return (str + '')
         .replace(/\0/g, '0')
         .replace(/\\([\\'"])/g, '$1');
-}
+} //}}}
 
 // insert <img>
-function imgTag($item, url, alt) {
+function imgTag($item, url, alt) { //{{{
     $('<img/>')
         .attr({
             src: url
@@ -437,18 +438,18 @@ function imgTag($item, url, alt) {
         })
         .appendTo($item)
     ;
-}
+} //}}}
 
 // bogus prototype.js's bind() ;)
-function scope(f, t) {
+function scope(f, t) { //{{{
     return function(){
         return f.apply(t, arguments);
     };
-}
+} //}}}
 
 // JavaScript currying
 // http://nanto.asablo.jp/blog/2008/02/14/2626240
-function curry(f, t) {
+function curry(f, t) { //{{{
     t = t || window;
     if (f.length == 0) {
         return f;
@@ -466,15 +467,17 @@ function curry(f, t) {
     };
 
     return iterate([]);
-}
+} //}}}
 
 
 // register LFM method
-$.fn.lastFM = function(options) {
+$.fn.lastFM = function(options) { //{{{
     $(this).each(function() {
         new LFM(options, this);
     });
-};
+} //}}};
 
 
 })(jQuery);
+
+// vim:se fdm=marker:
