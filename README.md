@@ -21,9 +21,9 @@ Last.FM for jQuery
   - IE6 以上、またはその他のブラウザ
 
 * 推奨動作環境
-  - jQuery 1.4 以上
+  - jQuery 1.4 以上  
     トラックをフェイド・インしながら表示するために必要です。
-  - [strftime.js][strftime.js]
+  - [strftime.js][strftime.js]  
     再生時刻を分かり易く表示するために必要です。
 
 
