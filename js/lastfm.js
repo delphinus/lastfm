@@ -275,7 +275,7 @@ LFM.prototype = {
         // link to Last.FM
         $('a', track.$item).attr({
             href: track.url
-            ,title: 'Listen to ' + track.name + ' on Last.FM'
+            ,title: 'Listen to ' + track.song + ' on Last.FM'
             ,target: '_blank'
         });
 
