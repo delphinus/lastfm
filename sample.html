@@ -79,6 +79,8 @@
         <script>google.load('jquery', '1.7.1')</script>
         <script src="./js/lastfm.js"></script>
         <script>
+            window.TEST_MODE = true;
+
             $('#updateSidebar').bind('click', function() {
                 $('#sidebar-view').lastFM({
                     artSize    : 'small'

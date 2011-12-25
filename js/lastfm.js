@@ -251,7 +251,7 @@ LFM.prototype = {
         var then, seconds, minutes, $art, lastTrack, $i
             // if jquery version is under 1.4,
             // you can't use .delay()
-            ,interval = jqVersion < 1.4 && this.options.drawDelay
+            ,interval = jqVersion >= 1.4 && this.options.drawDelay
                 ? this.options.showInterval * i : 0
             ,showArtistImage = false
             ,track = {
