@@ -40,7 +40,7 @@ $('#lastfm').lastFM({
     ,autoUpdate: true           // 自動更新する
     ,updateInterval: '10m'      // 更新間隔
     ,drawDelay: true            // 表示を遅らせる
-    ,fadeDuration: 500          // 遅らせる間隔（単位：ミリセカンド）
+    ,showInterval: 500          // 遅らせる間隔（単位：ミリセカンド）
     ,onComplete: function(){}   // 完了したときに実行する関数
 });
 ```

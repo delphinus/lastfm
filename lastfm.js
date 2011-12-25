@@ -61,10 +61,11 @@ LFM.prototype = {
         // if autoUpdate is true, this interval is used.
         // you can use prefix: h => hours, m => minutes, s => seconds
         ,updateInterval: '1m'
-        // if true, tracks will appear with fade-in effect.
+        // if true, tracks will appear in order with fade-in effect.
         ,drawDelay: true
-        // duration for fade-in. this must be specified in milliseconds.
-        ,fadeDuration: 500
+        // duration for showing of tracks.
+        // this must be specified in milliseconds.
+        ,showInterval: 500
         // callback to be called when query has finished.
         ,onComplete: function(){}
     } //}}}
@@ -89,6 +90,7 @@ LFM.prototype = {
 
         // if object has found
         if (i < window.lfmObjs.length) {
+            _log('92 : ');
             _log(lfm);
             // stop timers
             for (j in lfm.timer) {
@@ -97,12 +99,13 @@ LFM.prototype = {
 
             // remove label for next update
             if (lfm.$timerLabel) {
-                _log(lfm.$timerLabel);
                 lfm.$timerLabel.remove();
             }
 
+            // replace object with `this'
             name = lfm.name;
             item = lfm.item;
+            window.lfmObjs[i] = this;
 
         // add className consisting of timestamp to object 
         } else {
@@ -156,9 +159,12 @@ LFM.prototype = {
                     .addClass('lfm_update')
                     .appendTo(this.$container.parent());
                 label.attr({id: 'LFM_timer-' + $.now()});
+                _log('158 : ');
                 _log(label);
 
                 this.$timerLabel = label;
+                _log('161 : ');
+                _log(this.$timerLabel);
             }
 
             // display time for next update
@@ -233,7 +239,7 @@ LFM.prototype = {
     ,displaytrack: function(i, info) { //{{{
         var then, seconds, minutes, $art, lastTrack
             ,interval = this.options.drawDelay
-                ? this.options.fadeDuration * i : 0
+                ? this.options.showInterval * i : 0
             ,showArtistImage = false
             ,track = {
                 url: stripslashes(info.url)
@@ -266,7 +272,11 @@ LFM.prototype = {
         }
 
         // fade-in display
-        track.$item.delay(interval).fadeIn('slow');
+        if (interval) {
+            track.$item.delay(interval).fadeIn('slow');
+        } else {
+            track.$item.show();
+        }
 
         // search album arts
         try {
