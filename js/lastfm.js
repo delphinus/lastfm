@@ -10,9 +10,20 @@ if (!Date.prototype.strftime) {
 // for debug
 if (!window.console) {
     window.console = {
-        log: $.noop()
+        log: $.noop
     };
 }
+
+// for jQuery 1.3
+if (!$.noop) {
+    $.noop = function(){};
+}
+if (!$.now) {
+    $.now = function() {
+        return new Date().getTime();
+    };
+}
+
 
 // array for instances
 window.lfmObjs = [];
@@ -30,6 +41,8 @@ var _log = function(msg) {
             return false;
         }
     }
+
+    ,jqVersion = $.fn.jquery.replace(/\.(?=\d*)/, '')
 
     // constructor
     ,LFM = function(options, container) {
@@ -67,7 +80,7 @@ LFM.prototype = {
         // this must be specified in milliseconds.
         ,showInterval: 500
         // callback to be called when query has finished.
-        ,onComplete: $.noop()
+        ,onComplete: $.noop
     } //}}}
 
     // initialization
@@ -189,50 +202,56 @@ LFM.prototype = {
         }
 
         // query for tracks to Last.FM
-        $.getJSON(this.options.queryURL, {
-            method      : 'user.getrecenttracks'
-            ,format     : 'json'
-            ,user       : this.options.username
-            ,api_key    : this.options.apikey
-            ,limit      : this.options.number
-            ,nowplaying : true
-            // avoid duplication of tracks.
-            // get tracks which played after this timestamp.
-            ,from       : this.tracks.length > 0 ?
-                this.tracks[this.tracks[0].uts == 0 ? 1 : 0].uts : 0
-
-        }, scope(function(data) {
-            // quit in errors
-            if (data.error) {
-                return this.handleError(data);
+        $.ajax({
+            url         : this.options.queryURL
+            ,dataType   : 'jsonp'
+            ,data       : {
+                method      : 'user.getrecenttracks'
+                ,format     : 'json'
+                ,user       : this.options.username
+                ,api_key    : this.options.apikey
+                ,limit      : this.options.number
+                ,nowplaying : true
+                // avoid duplication of tracks.
+                // get tracks which played after this timestamp.
+                ,from       : this.tracks.length > 0 ?
+                    this.tracks[this.tracks[0].uts == 0 ? 1 : 0].uts : 0
             }
 
-            // display tracks
-            if ($.isArray(data.recenttracks.track)) {
-                // remove `now playing' track
-                if (this.tracks.length > 0 && this.tracks[0].uts == 0) {
-                    this.tracks.shift().$item.remove();
+            ,success    : scope(function(data) {
+                // quit in errors
+                if (data.error) {
+                    return this.handleError(data);
                 }
 
-                $.each(data.recenttracks.track.reverse()
-                    ,scope(this.displaytrack, this));
-            }
+                // display tracks
+                if ($.isArray(data.recenttracks.track)) {
+                    // remove `now playing' track
+                    if (this.tracks.length > 0 && this.tracks[0].uts == 0) {
+                        this.tracks.shift().$item.remove();
+                    }
 
-            // update playback time
-            this.updateTime();
-        }, this))
+                    $.each(data.recenttracks.track.reverse()
+                        ,scope(this.displaytrack, this));
+                }
 
-        // update finished
-        .complete(scope(function() {
-            this.updating = false;
-        }, this))
-        ;
+                // update playback time
+                this.updateTime();
+            }, this)
+
+            // update finished
+            ,complete: scope(function() {
+                this.updating = false;
+            }, this)
+        });
     } //}}}
 
     // display info of tracks
     ,displaytrack: function(i, info) { //{{{
-        var then, seconds, minutes, $art, lastTrack
-            ,interval = this.options.drawDelay
+        var then, seconds, minutes, $art, lastTrack, $i
+            // if jquery version is under 1.4,
+            // you can't use .delay()
+            ,interval = jqVersion < 1.4 && this.options.drawDelay
                 ? this.options.showInterval * i : 0
             ,showArtistImage = false
             ,track = {
@@ -262,7 +281,13 @@ LFM.prototype = {
 
         // remove tracks to excess
         if (this.tracks.length + 1 > this.options.number) {
-            this.tracks.pop().$item.delay(interval).remove();
+            $i = this.tracks.pop().$item;
+
+            if (interval) {
+                $i.delay(interval).remove();
+            } else {
+                $i.remove();
+            }
         }
 
         // fade-in display

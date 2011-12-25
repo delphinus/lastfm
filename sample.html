@@ -77,16 +77,16 @@
         <!-- -->
         <script src="https://www.google.com/jsapi"></script>
         <script>google.load('jquery', '1.7.1')</script>
-        <script src="./js/lastfm.min.js"></script>
+        <script src="./js/lastfm.js"></script>
         <script>
-            $('#updateSidebar').on('click', function() {
+            $('#updateSidebar').bind('click', function() {
                 $('#sidebar-view').lastFM({
                     artSize    : 'small'
                     ,drawDelay : false
                 });
             }).trigger('click');
 
-            $('#updateWide').on('click', function() {
+            $('#updateWide').bind('click', function() {
                 $('#wide-view').lastFM({
                     number     : 8
                     ,artSize   : 'large'
@@ -94,7 +94,7 @@
                 });
             }).trigger('click');
 
-            $('#updateFadeIn').on('click', function() {
+            $('#updateFadeIn').bind('click', function() {
                 $('#fadein-view').lastFM({
                     number   : 8
                     ,artSize : 'large'
